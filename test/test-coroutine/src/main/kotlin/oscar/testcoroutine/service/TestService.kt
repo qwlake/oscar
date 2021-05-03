@@ -1,18 +1,13 @@
-package oscar.kotlin.answers.service
+package oscar.testcoroutine.service
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.lang.Thread.sleep
-import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLConnection
 
 @Service
-class MyService {
+class TestService {
 
-    val logger = LoggerFactory.getLogger(MyService::class.java)
+    val logger = LoggerFactory.getLogger(TestService::class.java)
 
     suspend fun foo(): String {
         val url = URL("http://localhost:8080/index")
