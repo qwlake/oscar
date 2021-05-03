@@ -1,7 +1,8 @@
-package com.example.test1.service
+package oscar.testserver.service
 
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 
 @Service
@@ -9,7 +10,7 @@ class TestService {
 
     fun bar(): String {
         val threadId = Thread.currentThread().id
-        println(threadId.toString() + "start")
+        println("$threadId start")
 
         // 실패
 //        val currentTimeMillis = System.currentTimeMillis()
@@ -27,8 +28,23 @@ class TestService {
 
         Thread.sleep(2000)
 
-        println(threadId.toString() + "end")
+//        val executorService = Executors.newSingleThreadScheduledExecutor()
+//        executorService.scheduleAtFixedRate(this::dump, 0, 2, TimeUnit.SECONDS)
+
+//        val scheduler = Executors.newSingleThreadScheduledExecutor()
+//        scheduler.schedule({}, 3000, TimeUnit.MILLISECONDS)
+
+//        var cnt = 0L
+//        while (cnt < 10000000000L) {
+//            cnt += 1
+//        }
+
+        println("$threadId end")
 
         return "bar"
+    }
+
+    fun dump() {
+        println("dump")
     }
 }
