@@ -1,0 +1,44 @@
+spring:
+  profiles:
+    active: local
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+--- #local
+spring:
+  config:
+    activate:
+      on-profile: local
+
+--- #vpn
+spring:
+  config:
+    activate:
+      on-profile: vpn
+
+--- #predev
+spring:
+  config:
+    activate:
+      on-profile: predev
+
+--- #dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+--- #stage
+spring:
+  config:
+    activate:
+      on-profile: stage
+
+--- #prd
+spring:
+  config:
+    activate:
+      on-profile: prd

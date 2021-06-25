@@ -1,0 +1,57 @@
+spring:
+  profiles:
+    active: local
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+--- #local
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  r2dbc:
+    #url: r2dbc:mariadb://ubi-dis.mariadb.database.azure.com:3306/cms
+    #username: dis@ubi-dis
+    url: r2dbc:mariadb://127.0.0.1:3306/cms
+    username: dis
+    password: Carrotins2@2@
+    pool-name: cms_stats
+    minimum-idle: 3
+    maximum-pool-size: 3
+    max-lifetime: 50000
+    idle-timeout: 50000
+    connection-timeout: 30000
+
+--- #vpn
+spring:
+  config:
+    activate:
+      on-profile: vpn
+
+--- #predev
+spring:
+  config:
+    activate:
+      on-profile: predev
+
+--- #dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+--- #stage
+spring:
+  config:
+    activate:
+      on-profile: stage
+
+--- #prd
+spring:
+  config:
+    activate:
+      on-profile: prd
