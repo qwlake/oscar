@@ -1,5 +1,5 @@
 
-const config = {
+let config = {
     clients: [{
         id: 'sample-client-id',	// TODO: Needed by refresh_token grant, because there is a bug at line 103 in https://github.com/oauthjs/node-oauth2-server/blob/v3.0.1/lib/grant-types/refresh-token-grant-type.js (used client.id instead of client.clientId)
         clientId: 'sample-client-id',
@@ -11,15 +11,17 @@ const config = {
         ],
         redirectUris: ["https://sample.com"]
     }],
-    confidentialClients: [{
-        clientId: 'confidentialApplication',
-        clientSecret: 'topSecret',
-        grants: [
-            'password',
-            'client_credentials'
-        ],
-        redirectUris: []
-    }],
+    confidentialClients: [
+        // {
+        //     clientId: 'confidentialApplication',
+        //     clientSecret: 'topSecret',
+        //     grants: [
+        //         'password',
+        //         'client_credentials'
+        //     ],
+        //     redirectUris: []
+        // }
+    ],
     authorizationCodes: [
         // {
         //     authorizationCode: '',
@@ -54,7 +56,7 @@ const dump = function() {
 
 const getAccessToken = function(token) {
 
-    const tokens = config.tokens.filter(function(savedToken) {
+    let tokens = config.tokens.filter(function(savedToken) {
         return savedToken.accessToken === token;
     });
 
@@ -63,11 +65,11 @@ const getAccessToken = function(token) {
 
 const getClient = function(clientId, clientSecret) {
 
-    const clients = config.clients.filter(function(client) {
+    let clients = config.clients.filter(function(client) {
         return client.clientId === clientId;
     });
 
-    const confidentialClients = config.confidentialClients.filter(function(client) {
+    let confidentialClients = config.confidentialClients.filter(function(client) {
         return client.clientId === clientId && client.clientSecret === clientSecret;
     });
 
@@ -95,7 +97,7 @@ const saveToken = function(token, client, user) {
 
 const getUser = function(username, password) {
 
-    const users = config.users.filter(function(user) {
+    let users = config.users.filter(function(user) {
         return user.username === username && user.password === password;
     });
 
@@ -108,7 +110,7 @@ const getUser = function(username, password) {
 
 const getUserFromClient = function(client) {
 
-    const clients = config.confidentialClients.filter(function(savedClient) {
+    let clients = config.confidentialClients.filter(function(savedClient) {
         return savedClient.clientId === client.clientId && savedClient.clientSecret === client.clientSecret;
     });
 
@@ -121,7 +123,7 @@ const getUserFromClient = function(client) {
 
 const getRefreshToken = function(refreshToken) {
 
-    const tokens = config.tokens.filter(function(savedToken) {
+    let tokens = config.tokens.filter(function(savedToken) {
         return savedToken.refreshToken === refreshToken;
     });
 
@@ -134,21 +136,23 @@ const getRefreshToken = function(refreshToken) {
 
 const revokeToken = function(token) {
 
+    let revokedTokensFound = config.tokens.filter(function(savedToken) {
+        return savedToken.refreshToken === token.refreshToken;
+    });
+
     config.tokens = config.tokens.filter(function(savedToken) {
         return savedToken.refreshToken !== token.refreshToken;
     });
 
-    const revokedTokensFound = config.tokens.filter(function(savedToken) {
-        return savedToken.refreshToken === token.refreshToken;
-    });
-
-    return !revokedTokensFound.length;
+    return !!revokedTokensFound.length;
 };
 
-//////
+/*
+ * Methods used only by authorization_code grant type.
+ */
 
 const saveAuthorizationCode = function(code, client, user) {
-    const authorizationCode = {
+    let authorizationCode = {
         authorizationCode: code.authorizationCode,
         expiresAt: code.expiresAt,
         redirectUri: code.redirectUri,
@@ -163,7 +167,7 @@ const saveAuthorizationCode = function(code, client, user) {
 };
 
 const getAuthorizationCode = function (authorizationCode) {
-    const code = config.authorizationCodes.filter(function(savedCode) {
+    let code = config.authorizationCodes.filter(function(savedCode) {
         return savedCode.authorizationCode === authorizationCode;
     })[0];
     return {
@@ -177,33 +181,33 @@ const getAuthorizationCode = function (authorizationCode) {
 };
 
 const revokeAuthorizationCode = function (code) {
+    let revokedCodesFound = config.authorizationCodes.filter(function(savedCode) {
+        return savedCode.authorizationCode === code.authorizationCode;
+    });
+
     config.authorizationCodes = config.authorizationCodes.filter(function(savedCode) {
         return savedCode.authorizationCode !== code.authorizationCode;
     });
 
-    const revokedCodesFound = config.tokens.filter(function(savedCode) {
-        return savedCode.authorizationCode === code.authorizationCode;
-    });
-
-    return !revokedCodesFound.length;
+    return !!revokedCodesFound.length;
 };
 
+/*
+ * Methods used only by AccessToken revoke.
+ */
+
 const revokeTokenByAccessToken = function(token) {
+    let revokedTokensFound = config.tokens.filter(function(savedToken) {
+        return savedToken.accessToken === token.accessToken;
+    });
 
     config.tokens = config.tokens.filter(function(savedToken) {
         return savedToken.accessToken !== token.accessToken;
     });
 
-    const revokedTokensFound = config.tokens.filter(function(savedToken) {
-        return savedToken.accessToken === token.accessToken;
-    });
-
-    return !revokedTokensFound.length;
+    return !!revokedTokensFound.length;
 };
 
-/**
- * Export model definition object.
- */
 
 module.exports = {
     getAccessToken: getAccessToken,
