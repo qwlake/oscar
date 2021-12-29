@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:1.16.1
+    ports:
+      - "8444:443"
+    volumes:
+      - ./conf.d/:/etc/nginx/conf.d/
+      - ./cacerts.pem:/etc/nginx/client_certs/cacerts.pem
